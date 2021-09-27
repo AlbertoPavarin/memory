@@ -37,27 +37,33 @@ namespace Memory
             for (int i = 0; i < memory.Length; i++)
             {
                 int nCarta = random.Next(0, 4);
-                memory[i] = new PictureBox();
-                memory[i].Size = new Size(100, 100);
-                memory[i].Location = new Point(xImg, yImg);
-                memory[i].Image = assegnazioneCarta(nCarta);
-                memory[i].SizeMode = PictureBoxSizeMode.StretchImage;
-                memory[i].Padding = new Padding(5, 5, 5, 5);
-                memory[i].BorderStyle = BorderStyle.FixedSingle;
                 if (controlloNCarte(nCarta) > 2)
                 {
-                    this.Controls.Remove(memory[i]);
                     i--;
                 }
-                this.Controls.Add(memory[i]);
-
-                xImg += memory[i].Width + 10;
-
-                if (xImg >= 440)
+                else
                 {
-                    yImg += 120;
-                    xImg = 100;
-                }
+                    string nome;
+                    memory[i] = new PictureBox();
+                    memory[i].Name = nomeCarta(nCarta);
+                    nome = memory[i].Name;
+                    memory[i].Size = new Size(100, 100);
+                    memory[i].Location = new Point(xImg, yImg);
+                    memory[i].Image = assegnazioneCarta(nCarta);
+                    memory[i].SizeMode = PictureBoxSizeMode.StretchImage;
+                    memory[i].Padding = new Padding(5, 5, 5, 5);
+                    memory[i].BorderStyle = BorderStyle.FixedSingle;
+                    this.Controls.Add(memory[i]);
+                    memory[i].Click += delegate (object sender, EventArgs ea) { clickCarta(sender, ea, nome); };
+     
+                    xImg += memory[i].Width + 10;
+
+                    if (xImg >= 440)
+                    {
+                        yImg += 120;
+                        xImg = 100;
+                    }
+                }                
             }
         }
 
@@ -100,6 +106,33 @@ namespace Memory
                     return nMetronomo;
             }
             return -1;
+        }
+
+        public string nomeCarta(int nCarta)
+        {
+            string nome = "";
+            switch (nCarta)
+            {
+                case 0:
+                    nome = "Chitarra";
+                    return nome;
+                case 1:
+                    nome = "Amplificatore";
+                    return nome;
+                case 2:
+                    nome = "Batteria";
+                    return nome;
+                case 3:
+                    nome = "Metronomo";
+                    return nome;
+            }
+
+            return nome;
+        }
+
+        public void clickCarta(object sender, EventArgs ea, string nome)
+        {
+            MessageBox.Show($"{nome}");
         }
     }
 }
