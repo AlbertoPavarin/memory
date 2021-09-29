@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Memory
@@ -15,7 +9,12 @@ namespace Memory
 
         int nChitarra, nAmp, nBatteria, nMetronomo = 0;
 
+        int punteggio = 0;
+
+        PictureBox primoClick, secondoClick;
+
         PictureBox[] memory = new PictureBox[8];
+
         int xImg = 100;
         int yImg = 110;
 
@@ -24,12 +23,12 @@ namespace Memory
         public Form1()
         {
             InitializeComponent();
+            
             creazioneImg();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
         }
 
         public void creazioneImg()
@@ -50,11 +49,12 @@ namespace Memory
                     memory[i].Size = new Size(100, 100);
                     memory[i].Location = new Point(xImg, yImg);
                     memory[i].Image = assegnazioneCarta(nCarta);
+                    memory[i].BackColor = Color.Black;
                     memory[i].SizeMode = PictureBoxSizeMode.StretchImage;
                     memory[i].Padding = new Padding(5, 5, 5, 5);
                     memory[i].BorderStyle = BorderStyle.FixedSingle;
                     this.Controls.Add(memory[i]);
-                    memory[i].Click += delegate (object sender, EventArgs ea) { clickCarta(sender, ea, nome); };
+                    memory[i].Click += new EventHandler(clickCarta);
      
                     xImg += memory[i].Width + 10;
 
@@ -85,9 +85,21 @@ namespace Memory
                     simboloCarta = Properties.Resources._4;
                     return simboloCarta;
             }
-
             return simboloCarta;
         }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            timer1.Stop();
+
+            primoClick.BackColor = Color.Black;
+            secondoClick.BackColor = Color.Black;
+
+            primoClick = null;
+            secondoClick = null;
+
+        }
+
         public int controlloNCarte(int nCarta)
         {
             switch (nCarta)
@@ -130,9 +142,53 @@ namespace Memory
             return nome;
         }
 
-        public void clickCarta(object sender, EventArgs ea, string nome)
+        public void clickCarta(object sender, EventArgs ea)
         {
-            MessageBox.Show($"{nome}");
+
+            if (primoClick != null && secondoClick != null)
+            {
+                return;
+            }
+
+            PictureBox cartaCliccata = sender as PictureBox;
+
+            if (cartaCliccata == null)
+            {
+                return;
+            }
+            
+            if (primoClick == null)
+            {
+                primoClick = cartaCliccata;
+                primoClick.BackColor = Color.Transparent;
+                primoClick.Image = cartaCliccata.Image;
+                return;
+            }
+
+            secondoClick = cartaCliccata;
+            secondoClick.BackColor = Color.Transparent;
+            secondoClick.Image = cartaCliccata.Image;                
+
+            if (primoClick.Name == secondoClick.Name)
+            { 
+                punteggio++;
+                controlloVincitore(punteggio);
+                PunteggioLbl.Text = "Punteggio:" + punteggio;
+                primoClick = null;
+                secondoClick = null;
+            }
+            else
+                timer1.Start();
+
+        }
+
+        public void controlloVincitore(int punti)
+        {
+            if (punteggio == memory.Length / 2)
+            {
+                VincitoreLbl.Visible = true;
+                VincitoreLbl.Text = "Complimenti hai vinto";
+            }
         }
     }
 }
