@@ -9,11 +9,18 @@ namespace Memory
 
         int nChitarra, nAmp, nBatteria, nMetronomo = 0;
 
-        int punteggio = 0;
+        int punteggio1 = 0;
+        int punteggio2 = 0;
+
+        int turno;
+
+        string utente1, utente2;
 
         PictureBox primoClick, secondoClick;
 
         PictureBox[] memory = new PictureBox[8];
+
+        Random turnoRnd = new Random();
 
         int xImg = 100;
         int yImg = 110;
@@ -23,8 +30,8 @@ namespace Memory
         public Form1()
         {
             InitializeComponent();
-            
-            creazioneImg();
+            this.BackgroundImageLayout = ImageLayout.Stretch;
+            this.BackgroundImage = Properties.Resources.sfondo;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -49,9 +56,9 @@ namespace Memory
                     memory[i].Size = new Size(100, 100);
                     memory[i].Location = new Point(xImg, yImg);
                     memory[i].Image = assegnazioneCarta(nCarta);
-                    memory[i].BackColor = Color.Black;
+                    memory[i].BackColor = Color.LightBlue;
                     memory[i].SizeMode = PictureBoxSizeMode.StretchImage;
-                    memory[i].Padding = new Padding(5, 5, 5, 5);
+                    memory[i].Padding = new Padding(5000, 0, 0, 0);
                     memory[i].BorderStyle = BorderStyle.FixedSingle;
                     this.Controls.Add(memory[i]);
                     memory[i].Click += new EventHandler(clickCarta);
@@ -92,14 +99,41 @@ namespace Memory
         {
             timer1.Stop();
 
-            primoClick.BackColor = Color.Black;
-            secondoClick.BackColor = Color.Black;
+            primoClick.Padding = new Padding(5000, 0, 0, 0);
+            secondoClick.Padding = new Padding(5000, 0, 0, 0);
+            primoClick.BackColor = Color.LightBlue;
+            secondoClick.BackColor = Color.LightBlue;
 
             primoClick = null;
             secondoClick = null;
 
         }
 
+        private void giocaBtn_Click(object sender, EventArgs e)
+        {
+            if (utente1Txt.Text != "" && utente2Txt.Text != "")
+            {
+                turnoLbl.Visible = true;
+                utente1 = utente1Txt.Text;
+                utente2 = utente2Txt.Text;
+                utente1Txt.Visible = false;
+                utente2Txt.Visible = false;
+                giocaBtn.Visible = false;
+                label1.Visible = false;
+                label2.Visible = false;
+                punti1Lbl.Text = $"Punteggio {utente1}: {punteggio1}";
+                punti2Lbl.Text = $"Punteggio {utente2}: {punteggio2}";
+                punti1Lbl.Visible = true;
+                punti2Lbl.Visible = true;
+                turno = turnoRnd.Next(1, 3);
+                if (turno == 1)
+                    turnoLbl.Text += $"{utente1}";
+                else
+                    turnoLbl.Text += $"{utente2}";
+                creazioneImg();
+            }
+        }
+    
         public int controlloNCarte(int nCarta)
         {
             switch (nCarta)
@@ -144,7 +178,6 @@ namespace Memory
 
         public void clickCarta(object sender, EventArgs ea)
         {
-
             if (primoClick != null && secondoClick != null)
             {
                 return;
@@ -160,35 +193,73 @@ namespace Memory
             if (primoClick == null)
             {
                 primoClick = cartaCliccata;
-                primoClick.BackColor = Color.Transparent;
+                primoClick.BackColor = Color.CadetBlue;
                 primoClick.Image = cartaCliccata.Image;
+                primoClick.Padding = new Padding(10, 10, 10, 10);
                 return;
             }
 
             secondoClick = cartaCliccata;
-            secondoClick.BackColor = Color.Transparent;
-            secondoClick.Image = cartaCliccata.Image;                
+            secondoClick.BackColor = Color.CadetBlue;
+            secondoClick.Image = cartaCliccata.Image;
+         
+            secondoClick.Padding = new Padding(10, 10, 10, 10);
 
             if (primoClick.Name == secondoClick.Name)
-            { 
-                punteggio++;
-                controlloVincitore(punteggio);
-                PunteggioLbl.Text = "Punteggio:" + punteggio;
+            {
+                if (turno == 1)
+                    punteggio1++;
+                else
+                    punteggio2++;
+
+                if (punteggio1 + punteggio2 == memory.Length / 2)
+                    controlloVincitore(punteggio1, punteggio2, utente1, utente2);
+
+                MessageBox.Show("Complimenti, hai trovato una coppia");
+                this.Controls.Remove(primoClick);
+                this.Controls.Remove(secondoClick); 
+                punti1Lbl.Text = $"Punteggio {utente1}: {punteggio1}";
+                punti2Lbl.Text = $"Punteggio {utente2}: {punteggio2}";
                 primoClick = null;
                 secondoClick = null;
             }
             else
+            {
                 timer1.Start();
+                if (turno == 1)
+                {
+                    turno++;
+                }
+                else
+                {
+                    turno--;
+                }
+            }
 
+            if (turno == 1)
+                turnoLbl.Text = $"É il turno di: {utente1}";
+            else
+                turnoLbl.Text = $"É il turno di: {utente2}";
         }
 
-        public void controlloVincitore(int punti)
+        public void controlloVincitore(int punti1, int punti2, string utente1, string utente2)
         {
-            if (punteggio == memory.Length / 2)
+            if (punti1 > punti2)
             {
                 VincitoreLbl.Visible = true;
-                VincitoreLbl.Text = "Complimenti hai vinto";
+                VincitoreLbl.Text = $"Complimenti {utente1} hai vinto";
             }
+            else if (punti1 < punti2)
+            {
+                VincitoreLbl.Visible = true;
+                VincitoreLbl.Text = $"Complimenti {utente2} hai vinto";
+            }
+            else
+            {
+                VincitoreLbl.Visible = true;
+                VincitoreLbl.Text = "Pareggio";
+            }
+            turnoLbl.Visible = false;
         }
     }
 }
