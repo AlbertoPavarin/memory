@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
 
 namespace Memory
 {
@@ -11,6 +12,8 @@ namespace Memory
 
         int punteggio1 = 0;
         int punteggio2 = 0;
+
+        string percorso = AppDomain.CurrentDomain.BaseDirectory + "ultimaPartita";
 
         int turno;
 
@@ -32,10 +35,6 @@ namespace Memory
             InitializeComponent();
             this.BackgroundImageLayout = ImageLayout.Stretch;
             this.BackgroundImage = Properties.Resources.sfondo;
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
         }
 
         public void creazioneImg()
@@ -104,15 +103,32 @@ namespace Memory
             primoClick.BackColor = Color.LightBlue;
             secondoClick.BackColor = Color.LightBlue;
 
+            primoClick.Enabled = true;
+            secondoClick.Enabled = true;
             primoClick = null;
             secondoClick = null;
+        }
 
+        public void salvaPunteggi()
+        {
+            StreamWriter punteggi = new StreamWriter(percorso);           
+            punteggi.WriteLine($"L'ultima partita tra {utente1} e {utente2} si è concluso con il punteggio:\n{punteggio1} - {punteggio2}\n");
+            punteggi.Close();
+        }
+
+        private void storicoBtn_Click(object sender, EventArgs e)
+        {
+            storicoLbl.Visible = true;           
+            StreamReader leggiStorico = new StreamReader(percorso);
+            storicoLbl.Text = leggiStorico.ReadToEnd();
         }
 
         private void giocaBtn_Click(object sender, EventArgs e)
         {
             if (utente1Txt.Text != "" && utente2Txt.Text != "")
             {
+                storicoLbl.Visible = false;
+                partitaBtn.Visible = false;
                 turnoLbl.Visible = true;
                 utente1 = utente1Txt.Text;
                 utente2 = utente2Txt.Text;
@@ -131,6 +147,10 @@ namespace Memory
                 else
                     turnoLbl.Text += $"{utente2}";
                 creazioneImg();
+            }
+            else
+            {
+                MessageBox.Show("Inserire dei nomi utenti");
             }
         }
     
@@ -194,6 +214,7 @@ namespace Memory
             {
                 primoClick = cartaCliccata;
                 primoClick.BackColor = Color.CadetBlue;
+                primoClick.Enabled = false;
                 primoClick.Image = cartaCliccata.Image;
                 primoClick.Padding = new Padding(10, 10, 10, 10);
                 return;
@@ -210,16 +231,17 @@ namespace Memory
                 if (turno == 1)
                     punteggio1++;
                 else
-                    punteggio2++;
+                    punteggio2++;               
+
+                MessageBox.Show("Complimenti, hai trovato una coppia");
+                primoClick.Enabled = false;
+                secondoClick.Enabled = false;
+                punti1Lbl.Text = $"Punteggio {utente1}: {punteggio1}";
+                punti2Lbl.Text = $"Punteggio {utente2}: {punteggio2}";
 
                 if (punteggio1 + punteggio2 == memory.Length / 2)
                     controlloVincitore(punteggio1, punteggio2, utente1, utente2);
-
-                MessageBox.Show("Complimenti, hai trovato una coppia");
-                this.Controls.Remove(primoClick);
-                this.Controls.Remove(secondoClick); 
-                punti1Lbl.Text = $"Punteggio {utente1}: {punteggio1}";
-                punti2Lbl.Text = $"Punteggio {utente2}: {punteggio2}";
+                
                 primoClick = null;
                 secondoClick = null;
             }
@@ -260,6 +282,8 @@ namespace Memory
                 VincitoreLbl.Text = "Pareggio";
             }
             turnoLbl.Visible = false;
+            partitaBtn.Visible = true;
+            salvaPunteggi();
         }
     }
 }

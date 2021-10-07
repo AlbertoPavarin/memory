@@ -41,6 +41,8 @@ namespace Memory
             this.label2 = new System.Windows.Forms.Label();
             this.punti2Lbl = new System.Windows.Forms.Label();
             this.turnoLbl = new System.Windows.Forms.Label();
+            this.partitaBtn = new System.Windows.Forms.Button();
+            this.storicoLbl = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // timer1
@@ -80,9 +82,10 @@ namespace Memory
             // 
             // giocaBtn
             // 
-            this.giocaBtn.Location = new System.Drawing.Point(276, 274);
+            this.giocaBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.giocaBtn.Location = new System.Drawing.Point(268, 265);
             this.giocaBtn.Name = "giocaBtn";
-            this.giocaBtn.Size = new System.Drawing.Size(75, 23);
+            this.giocaBtn.Size = new System.Drawing.Size(90, 50);
             this.giocaBtn.TabIndex = 4;
             this.giocaBtn.Text = "Gioca";
             this.giocaBtn.UseVisualStyleBackColor = true;
@@ -137,11 +140,34 @@ namespace Memory
             this.turnoLbl.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.turnoLbl.Visible = false;
             // 
+            // partitaBtn
+            // 
+            this.partitaBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.partitaBtn.Location = new System.Drawing.Point(268, 330);
+            this.partitaBtn.Name = "partitaBtn";
+            this.partitaBtn.Size = new System.Drawing.Size(90, 50);
+            this.partitaBtn.TabIndex = 10;
+            this.partitaBtn.Text = "Ultima Partita";
+            this.partitaBtn.UseVisualStyleBackColor = true;
+            this.partitaBtn.Click += new System.EventHandler(this.storicoBtn_Click);
+            // 
+            // storicoLbl
+            // 
+            this.storicoLbl.BackColor = System.Drawing.Color.Transparent;
+            this.storicoLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.storicoLbl.Location = new System.Drawing.Point(0, 11);
+            this.storicoLbl.Name = "storicoLbl";
+            this.storicoLbl.Size = new System.Drawing.Size(633, 108);
+            this.storicoLbl.TabIndex = 11;
+            this.storicoLbl.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(634, 461);
+            this.Controls.Add(this.storicoLbl);
+            this.Controls.Add(this.partitaBtn);
             this.Controls.Add(this.turnoLbl);
             this.Controls.Add(this.punti2Lbl);
             this.Controls.Add(this.label2);
@@ -155,7 +181,6 @@ namespace Memory
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Memory";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -173,6 +198,8 @@ namespace Memory
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label punti2Lbl;
         private System.Windows.Forms.Label turnoLbl;
+        private System.Windows.Forms.Button partitaBtn;
+        private System.Windows.Forms.Label storicoLbl;
     }
 }
 
