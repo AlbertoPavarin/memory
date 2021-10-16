@@ -257,7 +257,7 @@ namespace Memory
                     punteggio1++;
                 else
                     punteggio2++;               
-            
+                    
                 primoClick.Enabled = false;
                 secondoClick.Enabled = false;
                 punti1Lbl.Text = $"Punteggio {utente1}: {punteggio1}";
